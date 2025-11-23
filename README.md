@@ -10,7 +10,10 @@
 - [Tech Stack](#-tech-stack)
 - [Project Structure](#-project-structure)
 - [Getting Started](#-getting-started)
+  - [Docker Setup (Recommended)](#docker-setup-recommended)
+  - [Manual Setup](#manual-setup)
 - [API Endpoints](#-api-endpoints)
+- [Docker & CI/CD](#-docker--cicd)
 - [Deployment](#-deployment)
 - [How It Works](#-how-it-works)
 
@@ -85,13 +88,38 @@ tinylink/
 
 ## 🚀 Getting Started
 
-### Prerequisites
+### Docker Setup (Recommended)
 
+**Prerequisites**: Docker and Docker Compose installed
+
+1. **Clone the repository**
+   ```bash
+   git clone <your-repo-url>
+   cd tinylink
+   ```
+
+2. **Start with Docker Compose**
+   ```bash
+   docker-compose up
+   ```
+
+3. **Access the application**
+   - Frontend: http://localhost:3000
+   - Backend: http://localhost:5000
+   - MongoDB: localhost:27017
+
+That's it! All services (MongoDB, Server, Client) will start automatically.
+
+> 📖 For detailed Docker instructions, see [DOCKER.md](./DOCKER.md)
+
+---
+
+### Manual Setup
+
+**Prerequisites**:
 - **Node.js** (v18 or higher)
 - **MongoDB** (local installation or MongoDB Atlas account)
 - **npm** or **yarn**
-
-### Installation
 
 1. **Clone the repository**
    ```bash
@@ -102,41 +130,32 @@ tinylink/
 2. **Set up the Server**
    ```bash
    cd server
+   cp .env.example .env
+   # Edit .env with your MongoDB URI
    npm install
-   ```
-
-   Create a `.env` file in the `server` directory:
-   ```env
-   MONGO_URI=your_mongodb_connection_string
-   PORT=5000
    ```
 
 3. **Set up the Client**
    ```bash
    cd ../client
+   cp .env.local.example .env.local
+   # Edit .env.local if needed
    npm install
    ```
 
-   Create a `.env.local` file in the `client` directory:
-   ```env
-   NEXT_PUBLIC_API_URL=http://localhost:5000
-   ```
-
-### Running Locally
-
-1. **Start the Server** (from `server` directory)
+4. **Start the Server** (from `server` directory)
    ```bash
    npm run dev
    ```
    Server runs on `http://localhost:5000`
 
-2. **Start the Client** (from `client` directory)
+5. **Start the Client** (from `client` directory)
    ```bash
    npm run dev
    ```
    Client runs on `http://localhost:3000`
 
-3. **Open your browser** and navigate to `http://localhost:3000`
+6. **Open your browser** and navigate to `http://localhost:3000`
 
 ---
 
@@ -165,10 +184,42 @@ tinylink/
 
 ---
 
+## 🐳 Docker & CI/CD
+
+TinyLink is fully containerized and includes a complete CI/CD pipeline:
+
+### Docker
+- Multi-stage Dockerfiles for optimized production builds
+- Docker Compose for easy local development
+- Production-ready configurations
+
+**Quick Start**:
+```bash
+docker-compose up
+```
+
+📖 **See [DOCKER.md](./DOCKER.md)** for complete Docker documentation
+
+### CI/CD Pipeline (Jenkins)
+- Automated builds on code push
+- Docker image creation and publishing
+- Parallel builds for faster deployment
+- Automated testing and deployment
+
+📖 **See [JENKINS.md](./JENKINS.md)** for Jenkins setup guide
+
+---
+
 ## 🌐 Deployment
 
-This project is designed to be deployed on free hosting platforms:
+Multiple deployment options available:
 
+### Option 1: Docker (Recommended)
+- Deploy anywhere Docker is supported
+- AWS, GCP, Azure, DigitalOcean, etc.
+- See [DOCKER.md](./DOCKER.md) for instructions
+
+### Option 2: Traditional Hosting
 - **Frontend**: [Vercel](https://vercel.com/) (recommended for Next.js)
 - **Backend**: [Render](https://render.com/) (free tier available)
 - **Database**: [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) (free tier available)

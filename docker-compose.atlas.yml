@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  # Express.js Server (using MongoDB Atlas - no local MongoDB needed)
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: tinylink-server
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      # Replace this with your MongoDB Atlas connection string
+      # Or use env_file to load from .env
+      - MONGO_URI=${MONGO_URI:-mongodb+srv://username:password@cluster.mongodb.net/tinylink?retryWrites=true&w=majority}
+      - PORT=5000
+      - NODE_ENV=development
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    networks:
+      - tinylink-network
+    command: npm run dev
+
+  # Next.js Client
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      target: deps
+    container_name: tinylink-client
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:5000
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - server
+    networks:
+      - tinylink-network
+    command: npm run dev
+
+networks:
+  tinylink-network:
+    driver: bridge
